@@ -1,10 +1,9 @@
 
 const express = require ("express")
 const app = express()
-
 const router = express.Router()
+app.use(express.json())
 const admin = require("../models/userchema")
-router.use(express.json())
 
 
 router.post('/adduser',(req,res)=>{
@@ -25,14 +24,25 @@ router.get('/kh',(req,res)=>{
    .catch((err)=>res.status(500).send(err))})
 
 router.put("/updateuser/:id",(req,res)=>{
-   const userID = req.params.id
+   let userID = req.params.id
    admin.findByIdAndUpdate(userID,{...req.body})
    .then((admin)=>{
       if(!admin){
          return res.status(404).send({msg:"not found"})}
-            res.sendFile({msg:"updatedd"})})
-   .catch((err)=>res.status(400).send({msg:"errod upadatinggg"}))
-})
+                res.send({msg:"updatedd"})})
+   .catch((err)=>res.status(400).send({msg:"errod upadating"})
+   )})
+   router.delete("/delete/:id",(req,res)=>{
+      admin.findByIdAndDelete(req.params.id)
+      .then((data)=>{
+         if (!data){
+            res.status(404).json({msg:'user not defined'})
+         }
+         else {
+            res.status(200).json({msg:"user deleted sucesseflly"})}
+      }).catch((error)=>{res.status(400).send(err)})
+   })
+
 
 
 
